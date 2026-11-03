@@ -1,0 +1,23 @@
+PARCHE: reutilizar LabRole sin modificar IAM
+
+Contenido:
+- infra/lib/api-stack.ts
+
+Aplicación (PowerShell, desde la raíz del proyecto):
+1. Haz una copia de seguridad del archivo actual.
+2. Descomprime este ZIP en la raíz del proyecto y acepta reemplazar api-stack.ts.
+3. Ejecuta npm run synth.
+4. Comprueba que la plantilla de la API ya no contiene AWS::IAM::Policy ni AWS::IAM::Role.
+
+Motivo:
+El LabRole ya tiene permisos permitidos para las acciones comprobadas (DynamoDB,
+Secrets Manager y escritura de logs). Se importa como mutable:false y se eliminan
+los grant* que hacían que CDK generase una política IAM que Learner Lab no puede
+adjuntar.
+
+IMPORTANTE:
+La simulación de permisos evalúa acciones con recurso '*'; no garantiza por sí sola
+que todos los recursos concretos ni las condiciones de ejecución estén cubiertos.
+No despliegues si el synth sigue mostrando AWS::IAM::Policy o si aparecen errores.
+Este cambio tampoco resuelve permisos de creación de otros recursos que CloudFormation
+pueda necesitar.
