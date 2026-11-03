@@ -631,6 +631,18 @@ const toEmailVerificationToken = (
     : {}),
 })
 
+const toSet = (item: Item): SetRecord => ({
+  id: item['id'] as string,
+  order: Number(item['order']),
+  category: item['category'] as string,
+  level: item['level'] as SetRecord['level'],
+  title: item['title'] as string,
+  blurb: item['blurb'] as string,
+  secondsPerQuestion: Number(item['secondsPerQuestion']),
+  status: item['status'] as SetRecord['status'],
+  attempts: Number(item['attempts'] ?? 0),
+})
+
 const toQuestion = (item: Item): QuestionRecord => ({
   id: item['id'] as string,
   setId: item['setId'] as string,

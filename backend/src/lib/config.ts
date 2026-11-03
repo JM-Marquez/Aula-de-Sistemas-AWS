@@ -60,7 +60,10 @@ export const config = {
   /** Base pública del sitio, para construir el enlace del correo. */
   appUrl: (process.env.APP_URL ?? '').replace(/\/$/, ''),
   /** Qué implementación del repositorio se usa. */
+  /** Clave API de Brevo para enviar correos de verificación. */
+  brevoApiKey: process.env.BREVO_API_KEY ?? '',
   repository: (process.env.REPOSITORY ?? 'memory') as 'memory' | 'dynamodb',
   /** Tabla única de DynamoDB. La inyecta CDK en cada Lambda. */
   tableName: process.env.TABLE_NAME ?? '',
+
 }
