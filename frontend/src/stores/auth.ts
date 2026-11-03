@@ -1,3 +1,4 @@
+
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { api, ApiError } from '../services'
@@ -14,7 +15,6 @@ export const useAuthStore = defineStore('auth', () => {
   const sending = ref(false)
   const resendIn = ref(0)
   const ready = ref(false)
-  /** Token del enlace, cuando el backend lo devuelve en modo taller. */
   const pendingToken = ref('')
 
   let ticker: ReturnType<typeof setInterval> | null = null
@@ -39,21 +39,15 @@ export const useAuthStore = defineStore('auth', () => {
     }, 1000)
   }
 
-  /**
-   * Restaura la sesión al arrancar la app.
-   *
-   * No lanza nunca: la llama el guard del router antes de la primera
-   * navegación, así que un fallo aquí dejaría la página en blanco. Si no se
-   * puede determinar quién es, se entra como anónimo y la pantalla de acceso
-   * hace el resto.
-   */
   async function restore() {
     if (ready.value) return
     try {
       user.value = await api.me()
     } catch (e) {
       user.value = null
-      error.value = e instanceof ApiError ? e.message : 'No se ha podido contactar con el servidor.'
+      error.value = e instanceof ApiError
+        ? e.message
+        : 'No se ha podido contactar con el servidor.'
     } finally {
       ready.value = true
     }
@@ -63,13 +57,38 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = ''
     sending.value = true
     try {
-      const session = await api.login(emailValue.trim().toLowerCase(), passwordValue)
+      const session = await api.login(
+        emailValue.trim().toLowerCase(),
+        passwordValue,
+      )
       user.value = session.user
       ready.value = true
       pendingToken.value = ''
       return true
     } catch (e) {
-      error.value = e instanceof ApiError ? e.message : 'No se ha podido iniciar sesión.'
+      error.value = e instanceof ApiError
+        ? e.message
+        : 'No se ha podido iniciar sesión.'
+      return false
+    } finally {
+      sending.value = false
+    }
+  }
+
+  async function register(emailValue: string, passwordValue: string) {
+    error.value = ''
+    sending.value = true
+    try {
+      await api.register(
+        emailValue.trim().toLowerCase(),
+        passwordValue,
+      )
+      email.value = emailValue.trim().toLowerCase()
+      return true
+    } catch (e) {
+      error.value = e instanceof ApiError
+        ? e.message
+        : 'No se ha podido crear la cuenta.'
       return false
     } finally {
       sending.value = false
@@ -85,7 +104,9 @@ export const useAuthStore = defineStore('auth', () => {
       step.value = 'sent'
       startCountdown()
     } catch (e) {
-      error.value = e instanceof ApiError ? e.message : 'No se ha podido enviar el enlace.'
+      error.value = e instanceof ApiError
+        ? e.message
+        : 'No se ha podido enviar el enlace.'
     } finally {
       sending.value = false
     }
@@ -96,10 +117,6 @@ export const useAuthStore = defineStore('auth', () => {
     await sendLink()
   }
 
-  /**
-   * Canjea el enlace. El token sale de la respuesta de `sendLink`; con SES de
-   * verdad llegaría en la URL del correo y se pasaría explícitamente.
-   */
   async function verify(token = pendingToken.value) {
     error.value = ''
     try {
@@ -108,7 +125,9 @@ export const useAuthStore = defineStore('auth', () => {
       pendingToken.value = ''
       return true
     } catch (e) {
-      error.value = e instanceof ApiError ? e.message : 'El enlace no es válido.'
+      error.value = e instanceof ApiError
+        ? e.message
+        : 'El enlace no es válido.'
       return false
     }
   }
@@ -146,6 +165,7 @@ export const useAuthStore = defineStore('auth', () => {
     restore,
     sendLink,
     login,
+    register,
     resend,
     verify,
     changeEmail,
