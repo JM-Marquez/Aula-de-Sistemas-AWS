@@ -121,18 +121,17 @@ Entornos de simulación donde se investigan incidencias paso a paso, interpretan
 
 ![Laboratorios](docs/laboratorios.png)
 
-### Clasificación
+### Clasificación (Leaderboard)
 
 Leaderboard con los resultados y puntuaciones de los participantes.
 
 ![Leaderboard](docs/leaderboard.png)
 
-### Evaluaciones
+### Sets de evaluación
 
 Conjuntos de preguntas para comprobar los conocimientos adquiridos.
 
 ![Sets de evaluación](docs/sets.png)
-
 
 ---
 
