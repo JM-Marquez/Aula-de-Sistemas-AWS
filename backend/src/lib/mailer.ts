@@ -134,6 +134,11 @@ export async function sendEmailVerification({
   `
 
   try {
+    logger.info('iniciando envío de correo mediante Brevo', {
+  to,
+  sender: config.mailFrom,
+  apiKeyConfigured: Boolean(config.brevoApiKey),
+})
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
@@ -158,7 +163,12 @@ export async function sendEmailVerification({
       throw new Error(`Brevo HTTP ${response.status}: ${details}`)
     }
 
-    logger.info('correo de confirmación enviado mediante Brevo', { to })
+   const result = await response.json() as { messageId?: string }
+
+logger.info('Brevo ha aceptado el correo de confirmación', {
+  to,
+  messageId: result.messageId ?? 'sin identificador',
+})
     return true
   } catch (error) {
     logger.error('no se ha podido enviar el correo de confirmación', {

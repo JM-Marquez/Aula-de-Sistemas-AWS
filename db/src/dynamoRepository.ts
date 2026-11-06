@@ -562,7 +562,7 @@ export class DynamoRepository implements QuizRepository {
    * leer la marca anterior y escribir la nueva podría colarse otra partida.
    * Si la condición no se cumple, no se escribe nada y no es un error.
    */
-  async saveBestScore(score: ScoreRecord): Promise<void> {
+    async saveBestScore(score: ScoreRecord): Promise<void> {
     try {
       await this.doc.send(
         new UpdateCommand({
@@ -570,7 +570,7 @@ export class DynamoRepository implements QuizRepository {
           Key: keys.score(score.setId, score.userId),
           UpdateExpression:
             'SET points = :points, averageSeconds = :avg, accuracy = :acc, updatedAt = :now, ' +
-            'userId = :userId, setId = :setId, entity = :entity, GSI1PK = :gsi1pk, GSI1SK = :points',
+            'userId = :userId, setId = :setId, entity = :entity, GSI1PK = :gsi1pk, GSI1SK = :gsi1sk',
           ConditionExpression: 'attribute_not_exists(points) OR points < :points',
           ExpressionAttributeValues: {
             ':points': score.points,
@@ -581,16 +581,18 @@ export class DynamoRepository implements QuizRepository {
             ':setId': score.setId,
             ':entity': 'SCORE',
             ':gsi1pk': gsi1ForScore(score.setId, score.points).GSI1PK,
+            ':gsi1sk': String(gsi1ForScore(score.setId, score.points).GSI1SK),
           },
         }),
       )
     } catch (error) {
-      // La marca anterior era mejor: no hay nada que hacer.
       if (isConditionFailed(error)) return
+
+      console.error('ERROR REAL saveBestScore:', error)
       throw new RepositoryError('No se ha podido guardar la marca.', { cause: error })
     }
   }
-}
+  }
 
 // ---------------------------------------------------------------------------
 // De ítem de DynamoDB a registro de dominio. Quitan PK/SK y los atributos de

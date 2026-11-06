@@ -75,8 +75,7 @@ export const keys = {
 
 export const GSI1 = 'GSI1' as const
 
-/** Atributos del índice que ordena las marcas por puntos. */
 export const gsi1ForScore = (setId: string, points: number) => ({
   GSI1PK: keys.scoresPartition(setId),
-  GSI1SK: points,
+  GSI1SK: String(points).padStart(3, '0'),
 })
