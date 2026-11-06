@@ -133,6 +133,10 @@ Conjuntos de preguntas para comprobar los conocimientos adquiridos.
 
 ![Sets de evaluación](docs/sets.png)
 
+### Sets de evaluación
+
+![Sets de evaluación](docs/sets.png)
+
 ---
 
 ## 4. Escenarios prácticos
@@ -207,6 +211,3 @@ Por tanto, la aplicación publicada es una demostración del proyecto y su funci
 
 **El proyecto se presenta como una experiencia práctica de aprendizaje y desarrollo cloud, no como un servicio de producción permanente.**
 
-### Sets de evaluación
-
-![Sets de evaluación](docs/sets.png)
