@@ -133,9 +133,6 @@ Conjuntos de preguntas para comprobar los conocimientos adquiridos.
 
 ![Sets de evaluación](docs/sets.png)
 
-### Sets de evaluación
-
-![Sets de evaluación](docs/sets.png)
 
 ---
 
