@@ -208,4 +208,5 @@ Por tanto, la aplicación publicada es una demostración del proyecto y su funci
 **El proyecto se presenta como una experiencia práctica de aprendizaje y desarrollo cloud, no como un servicio de producción permanente.**
 
 ### Sets de evaluación
-![Sets](docs/images/06-sets.png)
+
+![Sets de evaluación](docs/sets.png)
