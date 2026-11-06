@@ -1,213 +1,211 @@
-# Aula de Sistemas
+# Aula de Sistemas AWS
 
-**Plataforma web educativa para practicar administración de sistemas, redes, seguridad y servicios cloud mediante evaluaciones y laboratorios guiados.**
+Plataforma educativa para practicar competencias técnicas, resolver incidencias y realizar evaluaciones mediante laboratorios guiados.
 
-[🌐 Ver aplicación](https://aula-de-sistemas-aws.pages.dev/)
+**Proyecto académico de arquitectura cloud con Amazon Web Services (AWS).**
 
-> **Aviso sobre disponibilidad:** La aplicación está publicada en Cloudflare Pages, pero su backend depende del entorno temporal AWS Academy Learner Lab. Para utilizar el inicio de sesión, las evaluaciones y las funcionalidades conectadas al backend, es necesario que el laboratorio esté iniciado. Cuando el laboratorio está apagado, la web puede cargar, pero los servicios backend no están disponibles.
+[Ver aplicación](https://aula-de-sistemas-aws.pages.dev/)
+
+> **Nota:** El frontend está publicado en Cloudflare Pages. El backend utiliza recursos de AWS Academy Learner Lab, por lo que las operaciones que necesitan la API dependen de que el laboratorio esté activo.
 
 ---
 
-## 1. Descripción del proyecto
+## 1. Objetivo del proyecto
 
-Aula de Sistemas es una aplicación web educativa diseñada para acercar al usuario a situaciones habituales del trabajo en administración de sistemas y operaciones IT.
+El objetivo principal es desarrollar una plataforma que permita practicar y evaluar conocimientos técnicos relacionados con sistemas, redes, servicios cloud y seguridad.
 
-El proyecto combina evaluaciones de conocimientos con laboratorios guiados en los que se plantean incidencias técnicas y se acompaña al usuario durante el proceso de investigación y resolución.
+El proyecto también sirve como práctica de diseño, despliegue e integración de una arquitectura basada en servicios de AWS.
 
-Su objetivo es ofrecer un entorno práctico en el que aprender, comprobar conocimientos y familiarizarse con problemas que pueden aparecer en infraestructuras tecnológicas reales.
+## 2. Arquitectura cloud
 
-## 2. Funcionalidades principales
+La aplicación utiliza una arquitectura desacoplada: el frontend se publica de forma independiente y se comunica con un backend serverless mediante una API HTTP.
 
-- **Registro e inicio de sesión:** creación de cuentas y autenticación de usuarios.
-- **Verificación por correo electrónico:** confirmación de las cuentas mediante correo electrónico.
-- **Evaluaciones:** cuestionarios organizados en conjuntos de preguntas.
-- **Resultados y puntuaciones:** cálculo y almacenamiento de los resultados obtenidos.
-- **Clasificación:** ranking basado en las mejores puntuaciones.
-- **Laboratorios guiados:** simulaciones educativas para investigar incidencias técnicas.
-- **Catálogo de incidencias:** escenarios relacionados con Linux, AWS, redes y seguridad.
-- **Perfil de usuario:** consulta del progreso y de la actividad realizada.
-- **Diseño adaptable:** interfaz preparada para utilizarse tanto en ordenador como en dispositivos móviles.
+```mermaid
+flowchart TD
+    U[Usuario] --> CF[Cloudflare Pages]
+    CF --> FE[Frontend Vue 3 y TypeScript]
+    FE --> API[Amazon API Gateway HTTP API]
+    API --> L[AWS Lambda - Node.js 22]
+    L --> DB[(Amazon DynamoDB)]
+    L --> CW[Amazon CloudWatch]
+    L --> IAM[IAM - Rol de ejecución]
+    L --> B[Brevo - Envío de correos]
+    CDK[AWS CDK y CloudFormation] -. Gestionan infraestructura .-> API
+    CDK -.-> L
+    CDK -.-> DB
+```
 
-## 3. Laboratorios e incidencias
+### Servicios y tecnologías utilizados
 
-La plataforma incorpora cuatro escenarios de prácticas:
-
-| Área | Incidencia |
+| Tecnología | Función en el proyecto |
 |---|---|
-| Linux | Un servidor SSH rechaza las conexiones. |
-| AWS | Una función Lambda no puede leer objetos de S3 por un error de permisos. |
-| Redes | Los usuarios no pueden resolver el DNS de la intranet. |
-| Seguridad | Actividad sospechosa de inicio de sesión. |
+| AWS Lambda | Ejecución de la lógica del backend sin administrar servidores. |
+| Amazon API Gateway | Exposición de los endpoints HTTP de la aplicación. |
+| Amazon DynamoDB | Almacenamiento de usuarios, evaluaciones, preguntas y resultados. |
+| AWS IAM | Gestión de roles y permisos de ejecución. |
+| Amazon CloudWatch | Registros y supervisión de las ejecuciones. |
+| AWS CloudFormation | Gestión de los recursos de infraestructura. |
+| AWS CDK | Definición de infraestructura mediante código. |
+| Cloudflare Pages | Publicación del frontend. |
+| Brevo | Envío de correos de verificación de cuentas. |
 
-Los laboratorios presentan una secuencia de comprobaciones, comandos y resultados simulados para que el usuario pueda comprender el diagnóstico y la resolución.
+### Evidencias de infraestructura AWS
 
-**Nota:** Los comandos forman parte de una simulación educativa. No se ejecutan sobre un sistema operativo real.
+#### AWS Lambda
 
-## 4. Tecnologías utilizadas
+Funciones serverless encargadas de ejecutar las operaciones del backend.
 
-### Frontend
-- Vue 3.
-- TypeScript.
-- Vite.
-- HTML y CSS.
+![Funciones AWS Lambda](docs/lambda.png)
 
-### Backend
-- Node.js 22.
-- TypeScript.
-- AWS Lambda.
-- Amazon API Gateway (HTTP API).
+#### Amazon API Gateway
 
-### Base de datos y almacenamiento
-- Amazon DynamoDB.
+API HTTP que conecta el frontend con las funciones Lambda.
 
-### Servicios cloud y despliegue
-- AWS Academy Learner Lab.
-- AWS CloudFormation / AWS CDK.
-- Cloudflare Pages.
+![API Gateway - rutas](docs/api-rutas.png)
 
-### Correo electrónico
-- Brevo, para el envío de correos de verificación de cuenta.
+![API Gateway - segunda vista](docs/api-rutas2.png)
 
-## 5. Arquitectura del proyecto
+#### Amazon DynamoDB
 
-La aplicación utiliza una arquitectura desacoplada entre frontend y backend.
+Tabla utilizada para almacenar la información de la plataforma.
 
-```text
-                    USUARIO
-                       |
-                       v
-              CLOUDFLARE PAGES
-                 FRONTEND WEB
-                       |
-                       | Peticiones HTTP
-                       v
-              AMAZON API GATEWAY
-                   HTTP API
-                       |
-                       v
-                AWS LAMBDA
-              Lógica de negocio
-                       |
-                       v
-               AMAZON DYNAMODB
-                 Persistencia
+![DynamoDB - tabla](docs/dynamodb-tabla.png)
 
-                       |
-                       v
-                     BREVO
-              Verificación por email
-```
+![DynamoDB - elementos](docs/dynamodb-elementos.png)
 
-El frontend se publica mediante Cloudflare Pages y consume los endpoints del backend a través de Amazon API Gateway.
+#### Amazon CloudWatch
 
-Las funciones AWS Lambda ejecutan la lógica de autenticación, evaluaciones, gestión de resultados y otras operaciones de la aplicación. DynamoDB almacena la información persistente.
+Supervisión de las ejecuciones y consulta de los registros generados por Lambda.
 
-## 6. Estructura del repositorio
+![CloudWatch - eventos](docs/cloudwatch-eventos.png)
 
-El proyecto está organizado en diferentes módulos para separar la interfaz, la lógica de servidor y el acceso a datos.
+#### AWS IAM
 
-```text
-Aula-de-Sistemas-AWS/
-│
-├── frontend/
-│   └── Aplicación web
-│
-├── backend/
-│   ├── src/
-│   │   ├── handlers/
-│   │   ├── lib/
-│   │   ├── repository/
-│   │   └── services/
-│   │
-│   └── scripts/
-│
-├── db/
-│   ├── src/
-│   └── scripts/
-│
-├── package.json
-└── README.md
-```
+Roles y políticas de permisos utilizados por los servicios.
 
-## 7. Despliegue y configuración
+![IAM - permisos](docs/iam-permisos.png)
 
-### Frontend
+#### AWS CloudFormation
 
-El frontend está publicado en Cloudflare Pages.
+Seguimiento de los recursos y eventos de las pilas de infraestructura.
 
-- Proyecto: `aula-de-sistemas-aws`
-- Directorio de salida: `frontend/dist`
-- Comando de compilación: `npm run build:web`
+![CloudFormation - pila](docs/cloudformation-pila.png)
 
-### Backend
-
-El backend se ejecuta mediante funciones AWS Lambda y se comunica con el frontend a través de API Gateway.
-
-La variable de entorno utilizada por el frontend para localizar la API es:
-
-```env
-VITE_API_BASE_URL=https://mn3doev239.execute-api.us-east-1.amazonaws.com
-```
-
-El backend utiliza variables de entorno para configurar el repositorio de datos, la tabla de DynamoDB y los servicios externos.
-
-**Importante:** Las claves, credenciales, tokens y secretos no deben incluirse en el repositorio. Deben configurarse mediante los mecanismos seguros correspondientes.
-
-## 8. Entorno académico y limitaciones
-
-Este proyecto se ha desarrollado utilizando AWS Academy Learner Lab, un entorno educativo con recursos y credenciales temporales.
-
-Por este motivo:
-
-- La disponibilidad del backend depende de que el laboratorio esté iniciado.
-- Los servicios desplegados no constituyen una infraestructura de producción permanente.
-- La aplicación puede mostrar su interfaz aunque el backend no esté disponible.
-- Para convertirla en un servicio de producción sería necesario desplegar la infraestructura en una cuenta AWS permanente y configurar los recursos, credenciales, dominio y medidas de seguridad correspondientes.
-
-## 9. Objetivos de aprendizaje
-
-Durante el desarrollo del proyecto se han trabajado diferentes áreas técnicas:
-
-- Desarrollo de aplicaciones web con Vue y TypeScript.
-- Diseño y consumo de API REST.
-- Programación de funciones serverless.
-- Persistencia de datos con DynamoDB.
-- Autenticación y verificación de usuarios.
-- Integración de servicios externos de correo electrónico.
-- Despliegue de aplicaciones web.
-- Configuración de infraestructura cloud.
-- Diagnóstico y resolución de errores.
-- Diseño de experiencias educativas interactivas.
-
-## 10. Estado del proyecto
-
-El proyecto dispone de las funcionalidades principales implementadas y probadas dentro del entorno académico.
-
-Se han comprobado el registro, la verificación de correo, el inicio de sesión, las evaluaciones, el almacenamiento de puntuaciones, el ranking y los laboratorios guiados.
+![CloudFormation - eventos](docs/cloudformation-eventos.png)
 
 ---
 
-**Proyecto académico y portfolio de desarrollo cloud.**
+## 3. Funcionalidades de la plataforma
 
-## Aplicación en funcionamiento
-
-La plataforma permite practicar competencias técnicas mediante evaluaciones,
-investigación de incidencias y laboratorios guiados.
+La plataforma permite trabajar con diferentes áreas de conocimiento y practicar mediante evaluaciones y escenarios simulados.
 
 ### Competencias
-![Competencias](docs/images/01-competencias.png)
+
+![Competencias](docs/competencias.png)
 
 ### Incidencias
-![Incidencias](docs/images/02-incidencias.png)
+
+Catálogo de situaciones técnicas inspiradas en problemas que pueden aparecer en entornos reales.
+
+![Incidencias](docs/incidencias.png)
 
 ### Inicio de sesión
-![Inicio de sesión](docs/images/03-login.png)
 
-### Laboratorios
-![Laboratorios](docs/images/04-laboratorios.png)
+Sistema de registro, autenticación y verificación de correo electrónico.
 
-### Clasificación (Leaderboard)
-![Leaderboard](docs/images/05-leaderboard.png)
+![Inicio de sesión](docs/login.png)
+
+### Laboratorios guiados
+
+Entornos de simulación donde se investigan incidencias paso a paso, interpretando comandos y resultados.
+
+![Laboratorios](docs/laboratorios.png)
+
+### Clasificación
+
+Leaderboard con los resultados y puntuaciones de los participantes.
+
+![Leaderboard](docs/leaderboard.png)
+
+### Evaluaciones
+
+Conjuntos de preguntas para comprobar los conocimientos adquiridos.
+
+![Sets de evaluación](docs/sets.png)
+
+---
+
+## 4. Escenarios prácticos
+
+El proyecto incorpora cuatro escenarios de laboratorio:
+
+1. **Linux:** servidor SSH que rechaza conexiones.
+2. **AWS:** función Lambda sin permisos para leer objetos de S3.
+3. **Redes:** problemas de resolución DNS en una intranet.
+4. **Seguridad:** actividad de inicio de sesión sospechosa.
+
+Los laboratorios utilizan una terminal simulada con fines educativos. Los comandos no se ejecutan sobre sistemas reales.
+
+---
+
+## 5. Tecnologías de desarrollo
+
+- Vue 3
+- TypeScript
+- Vite
+- Node.js 22
+- AWS Lambda
+- Amazon API Gateway
+- Amazon DynamoDB
+- AWS CDK y CloudFormation
+- Cloudflare Pages
+- Brevo API
+
+---
+
+## 6. Aprendizajes
+
+Durante el desarrollo del proyecto he trabajado en:
+
+- Diseño de una arquitectura cloud desacoplada.
+- Desarrollo y despliegue de funciones serverless con AWS Lambda.
+- Configuración de APIs HTTP mediante API Gateway.
+- Persistencia y consulta de información con DynamoDB.
+- Gestión de roles y permisos mediante IAM.
+- Supervisión de ejecuciones y diagnóstico de errores con CloudWatch.
+- Gestión de infraestructura mediante CloudFormation y AWS CDK.
+- Integración de servicios externos mediante API REST.
+- Publicación de aplicaciones frontend y conexión con servicios backend.
+- Resolución de problemas de integración, configuración y despliegue.
+
+---
+
+## 7. Estructura del proyecto
+
+```text
+Aula_de_sistemas_AWS/
+├── backend/
+│   ├── src/
+│   └── scripts/
+├── frontend/
+├── db/
+├── docs/
+│   └── *.png
+├── README.md
+└── package.json
+```
+
+---
+
+## 8. Estado y limitaciones del entorno
+
+Este proyecto se ha desarrollado en un entorno académico de AWS Academy Learner Lab.
+
+El laboratorio tiene una duración y disponibilidad limitadas. Cuando se finaliza la sesión, los servicios backend de AWS dejan de estar disponibles, aunque la publicación del frontend en Cloudflare Pages pueda seguir cargando.
+
+Por tanto, la aplicación publicada es una demostración del proyecto y su funcionamiento completo depende de la disponibilidad del entorno AWS académico.
+
+**El proyecto se presenta como una experiencia práctica de aprendizaje y desarrollo cloud, no como un servicio de producción permanente.**
 
 ### Sets de evaluación
 ![Sets](docs/images/06-sets.png)
