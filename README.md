@@ -189,3 +189,25 @@ Se han comprobado el registro, la verificación de correo, el inicio de sesión,
 
 **Proyecto académico y portfolio de desarrollo cloud.**
 
+## Aplicación en funcionamiento
+
+La plataforma permite practicar competencias técnicas mediante evaluaciones,
+investigación de incidencias y laboratorios guiados.
+
+### Competencias
+![Competencias](docs/images/01-competencias.png)
+
+### Incidencias
+![Incidencias](docs/images/02-incidencias.png)
+
+### Inicio de sesión
+![Inicio de sesión](docs/images/03-login.png)
+
+### Laboratorios
+![Laboratorios](docs/images/04-laboratorios.png)
+
+### Clasificación (Leaderboard)
+![Leaderboard](docs/images/05-leaderboard.png)
+
+### Sets de evaluación
+![Sets](docs/images/06-sets.png)
